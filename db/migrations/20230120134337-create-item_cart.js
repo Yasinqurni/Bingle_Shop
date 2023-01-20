@@ -1,0 +1,36 @@
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+      await queryInterface.createTable('item_cart', { 
+        id: {
+          type: Sequelize.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        }, 
+        item_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references : {
+            model: "items",
+            key: "id",
+            as: "item_id"
+          }
+        },
+          cart_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references : {
+            model: "carts",
+            key: "id",
+            as: "cart_id"
+          }
+        },
+      })
+  },
+
+  async down (queryInterface, Sequelize) {
+      await queryInterface.dropTable('item_cart')
+  }
+};
