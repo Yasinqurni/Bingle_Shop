@@ -39,10 +39,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true
       },
-      role: {
-        type: Sequelize.STRING,
-        allowNull: true 
-      },
       created_at: {
         type: Sequelize.DATE,
         defaultValue: Date.now()
