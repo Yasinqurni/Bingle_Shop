@@ -1,3 +1,4 @@
+
 const { Model, DataTypes } = require("sequelize")
 const sequelize = require("../../config/config.js")
 
@@ -13,15 +14,15 @@ user.init(
       },
       fullname: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       address: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       email: {
         type: DataTypes.STRING,
@@ -44,7 +45,9 @@ user.init(
     deletedAt: 'deleted_at',
     updatedAt: 'updated_at',
     createdAt: 'created_at',
-  },
+  }
+  
 )
+// return user
 
 module.exports = user
