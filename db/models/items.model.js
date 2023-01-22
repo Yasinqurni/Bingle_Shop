@@ -14,7 +14,7 @@ item.init(
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        field: 'usar_id'
+        field: 'user_id'
       },
       name_item: {
         type: DataTypes.STRING,

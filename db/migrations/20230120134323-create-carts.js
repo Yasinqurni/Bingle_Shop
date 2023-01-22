@@ -13,6 +13,17 @@ module.exports = {
           type: Sequelize.DOUBLE,
           allowNull: false
         },
+        created_at: {
+          type: Sequelize.DATE,
+          defaultValue: Date.now()
+        },
+        updated_at: {
+          type: Sequelize.DATE,
+          defaultValue: Date.now()
+        },
+        deleted_at: {
+          type: Sequelize.DATE
+        }
       })
   },
 

@@ -1,3 +1,4 @@
+const e = require('express')
 const config = require('../config/auth')
 const { user } = require('../db/models')
 const bcrypt = require('bcrypt')
@@ -6,7 +7,7 @@ const jwt = require('jsonwebtoken')
 class userController {
 
     registerUser (req, res) {
-        console.log(req.body)
+        
         user.create({
             fullname: req.body.fullname,
             address: req.body.address,
@@ -15,8 +16,6 @@ class userController {
             password: bcrypt.hashSync(req.body.password, 8),
             role: req.body.role
         })
-
-        
         .then((result) => {
             res.status(201).json({
                 message: 'user was created successfully',
@@ -24,7 +23,7 @@ class userController {
             })
         }).catch((err)=>{
             res.status(500).json({
-                message: 'gagal gk tau kenapa',
+                message: err.message,
             })
         })
 
@@ -45,6 +44,7 @@ class userController {
                     accesToken: null,
                     message: 'Email not found'
                 })
+                return
             }
 
             let passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
