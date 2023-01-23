@@ -16,8 +16,13 @@ order.belongsTo(user, {
     foreignKey: 'user_id'
 })
 
-item.belongsTo(image, {
-    foreignKey: 'image_id'
+//relasi asli
+image.belongsTo(item, {
+    foreignKey: 'item_id'
+})
+// untuk menampikan data image didalam item
+item.hasMany(image, {
+    foreignKey: 'item_id'
 })
 
 item.belongsTo(category, {

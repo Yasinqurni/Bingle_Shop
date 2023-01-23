@@ -1,4 +1,4 @@
-const { user, item, category } = require('../db/models')
+const { user, item, category, image } = require('../db/models')
 
 class itemController {
 
@@ -32,8 +32,8 @@ class itemController {
     readItem (req, res) {
 
         item.findAll({
-            include: user
-        })  
+            include: image
+        }) 
     
         .then((result) => {
             res.status(200).json({
@@ -46,6 +46,57 @@ class itemController {
                 message: err.message
             })
         })
+    }
+
+    readItemById (req, res) {
+
+        const id = req.params.id
+        item.findByPk(id) 
+        .then((num) => {
+            if (num == 1) {
+            res.status(200).json({
+                message:  `show item by id: ${id} successfully`,
+                data: result
+                })
+            }
+            else{
+                res.status(404).json({
+                    message:  `item id: ${id} not found`,
+                })
+            }
+            })
+        
+        .catch((err) => {
+            res.status(500).json({
+                message: err.message
+            })
+        })
+    }
+
+    deleteItem (req, res) {
+
+        const id = req.params.id
+        
+        item.destroy({
+            where: {id: id}
+        })
+        .then((num) => {
+            if (num == 1) {
+            res.status(200).json({
+                message:  `delete item by id: ${id} successfully`,
+                })
+            }else {
+            res.status(404).json({
+                message:  `item with id: ${id} not found`,
+                })
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: err.message
+            })
+        })
+
     }
 }
 
