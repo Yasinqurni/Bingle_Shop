@@ -1,5 +1,7 @@
-const { isUserExist } = require('./validate_user_register')
+const { isUserExist } = require('./user_validate')
+const { tokenJwt } = require('./authentication')
 
 module.exports = {
-    isUserExist
+    isUserExist,
+    tokenJwt,
 }
