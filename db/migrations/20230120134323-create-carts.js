@@ -9,9 +9,12 @@ module.exports = {
           primaryKey: true,
           autoIncrement: true
         }, 
-        total_price: {
-          type: Sequelize.DOUBLE,
-          allowNull: false
+        user_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          model: "users",
+          key: "id",
+          as: "user_id"
         },
         created_at: {
           type: Sequelize.DATE,

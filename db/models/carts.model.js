@@ -11,9 +11,10 @@ cart.init(
         primaryKey: true,
         autoIncrement: true
       }, 
-      total_price: {
-        type: DataTypes.DOUBLE,
-        allowNull: false
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        field: 'user_id'
       }
   },
   {

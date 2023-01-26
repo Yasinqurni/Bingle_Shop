@@ -10,7 +10,7 @@ class itemController {
             return
         }
         item.create({
-            user_id: req.body.user_id,
+            user_id: req.userId,
             name_item: req.body.name_item,
             category_id: req.body.category_id,
             price: req.body.price,
@@ -48,24 +48,16 @@ class itemController {
         })
     }
 
-    readItemById (req, res) {
+    async readItemById (req, res) {
 
         const id = req.params.id
         item.findByPk(id) 
-        .then((num) => {
-            if (num == 1) {
-            res.status(200).json({
-                message:  `show item by id: ${id} successfully`,
-                data: result
+        .then((result) => {
+                res.status(200).json({
+                    data: result,
+                    message: `show item with id: ${id}`,
                 })
-            }
-            else{
-                res.status(404).json({
-                    message:  `item id: ${id} not found`,
-                })
-            }
-            })
-        
+        })
         .catch((err) => {
             res.status(500).json({
                 message: err.message
@@ -127,5 +119,5 @@ class itemController {
 }
 
 module.exports = {
-    itemController
+    itemController,
 }

@@ -37,9 +37,9 @@ item_cart.belongsTo(cart, {
     foreignKey: 'cart_id'
 })
 
-order.hasOne(cart, {
-    foreignKey: 'cart_id'
-})
+// order.hasOne(cart, {
+//     foreignKey: 'cart_id'
+// })
 
 
 module.exports = {
