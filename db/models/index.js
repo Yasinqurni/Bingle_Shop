@@ -33,10 +33,17 @@ item_cart.belongsTo(item, {
     foreignKey: 'item_id'
 })
 
+item.hasMany(item_cart, {
+    foreignKey: 'item_id'
+})
+
 item_cart.belongsTo(cart, {
     foreignKey: 'cart_id'
 })
 
+cart.hasMany(item_cart, {
+    foreignKey: 'cart_id'
+})
 // order.hasOne(cart, {
 //     foreignKey: 'cart_id'
 // })

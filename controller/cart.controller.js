@@ -1,52 +1,23 @@
 const { item, cart, item_cart } = require('../db/models')
 
 class cartController {
-    async addCart (req, res, next) {
+    async createCart (req, res) {
         try {
-            //mencari cart yang aktif
-            const findCart = await cart.findAll()
-            //jika tidak ada maka akan membuat cart
-                if(!findCart){
-                    cart.create({
-                        user_id: req.userId
+            //membuat create cart baru
+            const createCart = await cart.create({
+                user_id: req.userId
+            })
+                //respon bila gagal
+                if(!createCart){
+                    return res.status(400).json({
+                        message: 'cannot create cart'
                     })
-                } else {
-                    console.log(findCart)
-                    //proses selanjutnya akan memasukkan item kedalam tabel item_cart
-                    //mencari item
-                    const id = req.params.id
-                    const findItems = await item.findByPk(id)
-                        if (!findItems) {
-                            return res.status(404).json({
-                                Message: `item not found`
-                            })
-                        }
-                    //membuat item_cart baru
-                    const createItemCart = item_cart.create({
-                        item_id: id,
-                        cart_id: findCart.id
-                    })
-                    console.log(createItemCart)
-                    if (!createItemCart) {
-                        return res.status(404).json({
-                            Message: `cannot create item_cart`
-                        })
-                    }
-                    //menampilkan data cart
-                    const showCart = cart.findAll()
-                    if(!showCart) {
-                        return res.status(404).json({
-                            Message: `cannot create item_cart`
-                        })
-                    }
-                    return res.status(200).json({
-                        message: `show cart successfully`,
-                        data: showCart
-                    })
-        
                 }
-
-               
+                //respon untuk kedua proses berhasil
+                return res.status(200).json({
+                    message: 'success create new cart',
+                    data: createCart
+                })               
         }
         
         catch (err) {
@@ -54,6 +25,91 @@ class cartController {
                 Message: err.message
             })
         }
+    }
+
+    async addCart(req, res) {
+        try {
+            //menemukan item
+            const id = req.params.id
+            const findItem = await item.findByPk(id)
+            if (!findItem) {
+                return res.status(404).json({
+                    message: `item ${id} not found`
+                })
+            }
+            // return res.status(200).json({
+            //         message: `find item successfully`,
+            //         data: findItem
+            //     })
+
+            //menemukan cart
+            const findCart = await cart.findOne({
+                where: { user_id: req.userId }
+            })
+            if (!findCart) {
+                return res.status(404).json({
+                    message: `cart not found, please create  new cart`
+                })
+            }
+            // return res.status(200).json({
+            //     message: `find cart successfully`,
+            //     data: findCart
+            // })
+
+            //create item_cart
+            const createItemcart = await item_cart.create({
+                item_id: findItem.id,
+                cart_id: findCart.id,
+            })
+            if (!createItemcart) {
+                return res.status(404).json({
+                    message: `cannot create item_cart`
+                })
+            }
+            return res.status(200).json({
+                message: `created item_cart`,
+                data: createItemcart
+            })
+        }
+        catch (err) {
+            res.status(500).json({
+                message: err.message,
+            })
+            // console.error(err)
+        }
+    }
+
+    async showCart(req, res) {
+       
+        try {
+            const findCart = await cart.findAll({
+                include: [
+                    {
+                        model: item_cart,
+                        include: [
+                            item
+                    ]}
+                ]
+            })
+            if (!findCart) {
+                return res.status(500).json({
+                    message: `cannot find cart`
+                })
+            }
+            
+            return res.status(200).json({
+                data: findCart,
+                message: `show all cart successfully`
+            })
+        }
+        catch(err) {
+
+        }
+        
+    }
+
+    async deleteCart(req, res) {
+
     }
 }
 

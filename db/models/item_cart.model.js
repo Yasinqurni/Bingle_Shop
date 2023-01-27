@@ -21,8 +21,16 @@ item_cart.init(
         allowNull: false,
         field: 'cart_id'
       },
+        item_quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
   },
   {
+    //bila terdapat error "relation \"item_carts\" does not exist" solusi freezeTableName: true
+    //agar si sequelize tidak menggenerate item_cart menjadi item_carts
+    //karena didalam migration terdeclare sebagai item_cart bukan item_carts
+    freezeTableName: true,
     sequelize: sequelize,
     timestamps: true,
     paranoid: true,
