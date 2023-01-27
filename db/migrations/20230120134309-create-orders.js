@@ -5,12 +5,14 @@ module.exports = {
   async up (queryInterface, Sequelize) {
       await queryInterface.createTable('orders', { 
         id: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
           autoIncrement: true
         }, 
         user_id: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
           allowNull: false,
           references : {
             model: "users",
@@ -19,7 +21,8 @@ module.exports = {
           }
         },
         cart_id: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
           allowNull: false,
           references : {
             model: "carts",
@@ -27,7 +30,11 @@ module.exports = {
             as: "cart_id"
           }
         },
-        status: {
+        total_price: {
+          type: Sequelize.DOUBLE,
+          allowNull: false,
+        },
+        status_order: {
           type: Sequelize.STRING,
           allowNull: false
         },

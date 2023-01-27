@@ -7,24 +7,31 @@ class item_cart extends Model {
 item_cart.init(
   {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         autoIncrement: true
       }, 
       item_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         field: 'item_id'
       },
-        cart_id: {
-        type: DataTypes.INTEGER,
+      cart_id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         field: 'cart_id'
       },
-        item_quantity: {
+      quantity_order: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      total_price: {
+        type: DataTypes.DOUBLE,
+        allowNull: false,
+      }
   },
   {
     //bila terdapat error "relation \"item_carts\" does not exist" solusi freezeTableName: true

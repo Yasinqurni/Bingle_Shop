@@ -4,11 +4,11 @@ const { tokenJwt } = require('../middleware')
 
 
 const cartcontroller = new cartController()
-const tokenjwt = new tokenJwt
+const tokenjwt = new tokenJwt()
 
-router.get('/api/createcart',tokenjwt.verifyToken, cartcontroller.createCart)
-router.get('/api/addcart/:id',tokenjwt.verifyToken, cartcontroller.addCart)
-router.get('/api/showcart',tokenjwt.verifyToken, cartcontroller.showCart)
+router.post('/api/cart',tokenjwt.verifyToken, cartcontroller.createCart)
+router.post('/api/cart/:id',tokenjwt.verifyToken, cartcontroller.addCart)
+router.get('/api/cart',tokenjwt.verifyToken, cartcontroller.showCart)
 
 
 module.exports = router

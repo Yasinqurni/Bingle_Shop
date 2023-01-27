@@ -7,21 +7,28 @@ class order extends Model {
 order.init(
   {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         autoIncrement: true
       }, 
       user_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         field: 'user_id'
       },
       cart_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         field: 'cart_id'
       },
-      status: {
+      total_price: {
+        type: DataTypes.DOUBLE,
+        allowNull: false,
+      }
+      status_order: {
         type: DataTypes.STRING,
         allowNull: false
       },
