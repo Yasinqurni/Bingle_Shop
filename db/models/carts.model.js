@@ -17,11 +17,11 @@ cart.init(
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         field: 'user_id'
-      }
+      },
       status_cart: {
         type: DataTypes.STRING,
         allowNull: false,
-      }
+      },
   },
   {
     sequelize: sequelize,

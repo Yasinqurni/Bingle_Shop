@@ -8,7 +8,7 @@ module.exports = {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
-          autoIncrement: true
+          // autoIncrement: true
         }, 
         category_name: {
           type: Sequelize.STRING,

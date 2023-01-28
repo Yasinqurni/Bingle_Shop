@@ -27,11 +27,11 @@ order.init(
       total_price: {
         type: DataTypes.DOUBLE,
         allowNull: false,
-      }
+      },
       status_order: {
         type: DataTypes.STRING,
         allowNull: false
-      },
+      }
   },
   {
     sequelize: sequelize,
