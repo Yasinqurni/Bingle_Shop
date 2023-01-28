@@ -16,7 +16,7 @@ router.get('/api/item/:id', itemcontroller.readItemById)
 //delete Item Endpoint
 router.delete('/api/item/:id', itemcontroller.deleteItem)
 //update Item Endpoint
-router.patch('/api/item/:id', itemcontroller.updateItem)
+router.patch('/api/item/:id',tokenjwt.verifyToken, itemcontroller.updateItem)
 
 
 module.exports = router

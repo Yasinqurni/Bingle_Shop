@@ -1,6 +1,6 @@
 const e = require('express')
 const config = require('../config/auth')
-const { user, cart } = require('../db/models')
+const { user } = require('../db/models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
