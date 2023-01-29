@@ -29,6 +29,12 @@ class cartController {
 
     async addCart(req, res) {
         try {
+        //status cart {pending,processing,complete}
+        //1. menemukan item yang akan dimasukkan ke cart dengan menggunakan id_item
+        //2. menemukan cart dengan status item:pending
+        //3. bila tidak ditemukan maka akan membuat cart baru dengan status:pending        
+        //4. membuat cart_item dengan id cart pending tsb
+
             //menemukan item
             const id = req.params.id
             const findItem = await item.findByPk(id)
@@ -37,29 +43,28 @@ class cartController {
                     message: `item ${id} not found`
                 })
             }
-            // return res.status(200).json({
-            //         message: `find item successfully`,
-            //         data: findItem
-            //     })
 
-            //menemukan cart
+            //menemukan cart dengan status item:pending
             const findCart = await cart.findOne({
-                where: { user_id: req.userId }
+                attributes: ['id', 'user_id','status_cart'],
+                where: { status_cart: 'pending' }
             })
-            if (!findCart) {
-                return res.status(404).json({
-                    message: `cart not found, please create  new cart`
+
+            // bila tidak ditemukan maka akan membuat cart baru dengan status:pending
+            if(!findCart) {
+                const createCart = await cart.create({
+                    user_id: req.userId,
+                    status_cart: 'pending'
                 })
+                return createCart
             }
-            // return res.status(200).json({
-            //     message: `find cart successfully`,
-            //     data: findCart
-            // })
 
             //create item_cart
             const createItemcart = await item_cart.create({
-                item_id: findItem.id,
-                cart_id: findCart.id,
+                item_id: req.body, //toString(findItem.id),
+                cart_id: req.body, //toString(findCart.id) || toString(createCart.id),
+                quantity_order: req.body,
+                total_price: req.body
             })
             if (!createItemcart) {
                 return res.status(404).json({
@@ -75,6 +80,7 @@ class cartController {
             res.status(500).json({
                 message: err.message,
             })
+            console.log(err)
             // console.error(err)
         }
     }
@@ -98,8 +104,9 @@ class cartController {
             }
             
             return res.status(200).json({
+                message: `show all cart successfully`,
                 data: findCart,
-                message: `show all cart successfully`
+                
             })
         }
         catch(err) {
@@ -108,9 +115,6 @@ class cartController {
         
     }
 
-    async deleteCart(req, res) {
-
-    }
 }
 
 module.exports = {

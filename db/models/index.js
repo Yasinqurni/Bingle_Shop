@@ -45,9 +45,9 @@ cart.hasMany(item_cart, {
     foreignKey: 'cart_id'
 })
 
-cart.belongsToMany(item, {through: item_cart})
-item.belongsToMany(cart, {through: item_cart})
-// order.hasOne(cart, {
+// cart.belongsToMany(item, {through: item_cart})
+// item.belongsToMany(cart, {through: item_cart})
+// // order.hasOne(cart, {
 //     foreignKey: 'cart_id'
 // })
 

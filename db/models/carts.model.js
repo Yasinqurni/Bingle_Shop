@@ -7,14 +7,12 @@ class cart extends Model {
 cart.init(
   {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
       }, 
       user_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
         allowNull: false,
         field: 'user_id'
       },
