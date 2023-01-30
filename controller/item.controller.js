@@ -1,4 +1,4 @@
-const { user, item, category, image } = require('../db/models')
+const { Item, Image } = require('../db/models')
 
 class itemController {
 
@@ -9,7 +9,7 @@ class itemController {
             })
             return
         }
-        item.create({
+        Item.create({
             user_id: req.userId,
             name_item: req.body.name_item,
             category_id: req.body.category_id,
@@ -31,8 +31,8 @@ class itemController {
 
     readItem (req, res) {
 
-        item.findAll({
-            include: image
+        Item.findAll({
+            include: Image
         }) 
     
         .then((result) => {
@@ -51,7 +51,7 @@ class itemController {
     async readItemById (req, res) {
 
         const id = req.params.id
-        item.findByPk(id) 
+        Item.findByPk(id) 
         .then((result) => {
                 res.status(200).json({
                     data: result,
@@ -69,7 +69,7 @@ class itemController {
 
         const id = req.params.id
         
-        item.destroy({
+        Item.destroy({
             where: {id: id}
         })
         .then((num) => {
@@ -95,7 +95,7 @@ class itemController {
         
         const id = req.params.id
         
-        item.update(req.body, {
+        Item.update(req.body, {
             where: {
                 id: id
             }

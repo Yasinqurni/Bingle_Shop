@@ -1,32 +1,7 @@
-const { item, cart, item_cart } = require('../db/models')
+const { Item, Cart, Item_cart } = require('../db/models')
 
 class cartController {
-    async createCart (req, res) {
-        try {
-            //membuat create cart baru
-            const createCart = await cart.create({
-                user_id: req.userId
-            })
-                //respon bila gagal
-                if(!createCart){
-                    return res.status(400).json({
-                        message: 'cannot create cart'
-                    })
-                }
-                //respon untuk kedua proses berhasil
-                return res.status(200).json({
-                    message: 'success create new cart',
-                    data: createCart
-                })               
-        }
-        
-        catch (err) {
-            return res.status(500).json({
-                Message: err.message
-            })
-        }
-    }
-
+   
     async addCart(req, res) {
         try {
         //status cart {pending,processing,complete}
@@ -37,34 +12,43 @@ class cartController {
 
             //menemukan item
             const id = req.params.id
-            const findItem = await item.findByPk(id)
+            
+            const findItem = await Item.findByPk(id)
             if (!findItem) {
                 return res.status(404).json({
                     message: `item ${id} not found`
                 })
             }
 
-            //menemukan cart dengan status item:pending
-            const findCart = await cart.findOne({
+            // menemukan cart dengan status item:pending
+            let cart = await Cart.findOne({
                 attributes: ['id', 'user_id','status_cart'],
-                where: { status_cart: 'pending' }
-            })
+                where: { 
+                    status_cart: 'pending',
+                    user_id: req.userId,
+                    }
+            })      
 
             // bila tidak ditemukan maka akan membuat cart baru dengan status:pending
-            if(!findCart) {
-                const createCart = await cart.create({
+            if(!cart) {
+                cart = await Cart.create({
                     user_id: req.userId,
                     status_cart: 'pending'
                 })
-                return createCart
-            }
+            } 
+            
+            const cartId = {}
+            cartId[cart.status_cart] = cart.id
 
             //create item_cart
+            const qty = req.body.quantity_order
+            const totalprice = qty * findItem.price
+
             const createItemcart = await item_cart.create({
-                item_id: req.body, //toString(findItem.id),
-                cart_id: req.body, //toString(findCart.id) || toString(createCart.id),
-                quantity_order: req.body,
-                total_price: req.body
+                item_id: id,
+                cart_id: cartId['pending'],
+                quantity_order: qty,
+                total_price: totalprice
             })
             if (!createItemcart) {
                 return res.status(404).json({
@@ -88,29 +72,37 @@ class cartController {
     async showCart(req, res) {
        
         try {
-            const findCart = await cart.findAll({
+            const findCart = await Cart.findAll({
+                attributes: ['id', 'user_id', 'status_cart'],
                 include: [
                     {
-                        model: item_cart,
-                        include: [
-                            item
-                    ]}
-                ]
+                        model: Item_cart,
+                        attributes: ['id', 'item_id', 'quantity_order', 'total_price'],
+                        include: [{
+                            model: Item,
+                            attributes: ['name_item', 'price'],
+                        }]
+                    }
+                ],
+                where: {user_id: req.userId}
             })
             if (!findCart) {
                 return res.status(500).json({
-                    message: `cannot find cart`
+                    message: `cart not found`
                 })
             }
             
             return res.status(200).json({
-                message: `show all cart successfully`,
+                message: `show cart successfully`,
                 data: findCart,
                 
             })
         }
         catch(err) {
-
+            return res.status(500).json({
+                message: err.message
+                
+            })
         }
         
     }

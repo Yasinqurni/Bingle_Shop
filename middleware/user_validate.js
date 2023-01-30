@@ -1,9 +1,9 @@
-const { user } = require('../db/models')
+const { User } = require('../db/models')
 
 class isUserExist {
     validate (req, res, next) {
 
-        user.findOne({
+        User.findOne({
             where: {
                 email: req.body.email
             }

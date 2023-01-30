@@ -1,5 +1,5 @@
 const config = require('../config/auth')
-const { user } = require('../db/models')
+const { User } = require('../db/models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -9,7 +9,7 @@ class userController {
         try {
 
             //membuat user baru 
-            const createUsers = await user.create({
+            const createUsers = await User.create({
                 fullname: req.body.fullname,
                 address: req.body.address,
                 phone: req.body.phone,
@@ -55,14 +55,14 @@ class userController {
     }
     
     loginUser (req, res) {
-        user.findOne({
+        User.findOne({
             where:{
                 email: req.body.email
             }
         })
-        .then((user) => {
+        .then((User) => {
             //pesan bila email tidak ditemukan
-            if(!user){
+            if(!User){
                 res.status(404).json({
                     accesToken: null,
                     message: 'Email not found'
@@ -70,7 +70,7 @@ class userController {
                 return
             }
             //membuat fariable validasi password
-            let passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
+            let passwordIsValid = bcrypt.compareSync(req.body.password, User.password)
         
             if(!passwordIsValid) {
                 return res.status(401).json({
@@ -79,15 +79,15 @@ class userController {
                 })
             }
             //membuat token dan akan mengirimkannya kedalam respom
-            let token = jwt.sign({ id: user.id, role: user.role}, config.secret, {
+            let token = jwt.sign({ id: User.id, role: User.role}, config.secret, {
                 expiresIn: 86400, //24 jam
             })
             //respon dari login
             res.status(200).json({
-                id: user.id,
-                name: user.name,  
-                role: user.role,  
-                email: user.email,
+                id: User.id,
+                name: User.name,  
+                role: User.role,  
+                email: User.email,
                 accesToken: token,
             })     
         })
@@ -102,7 +102,7 @@ class userController {
     async profileUser(req, res) {
         try{
             //membuat queri untuk menemukan id sesuai dengan yang ada di token
-            const userProfile = await user.findOne({
+            const userProfile = await User.findOne({
             where: {id: req.userId} 
             })
             if(!userProfile) {
