@@ -44,7 +44,7 @@ class cartController {
             const qty = req.body.quantity_order
             const totalprice = qty * findItem.price
 
-            const createItemcart = await item_cart.create({
+            const createItemcart = await Item_cart.create({
                 item_id: id,
                 cart_id: cartId['pending'],
                 quantity_order: qty,
@@ -64,8 +64,6 @@ class cartController {
             res.status(500).json({
                 message: err.message,
             })
-            console.log(err)
-            // console.error(err)
         }
     }
 

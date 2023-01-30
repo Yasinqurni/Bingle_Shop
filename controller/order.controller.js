@@ -2,10 +2,10 @@ const { Order, Cart, Item_cart } = require('../db/models')
 
 class orderController {
     //
-    checkout(req, res) {
+    async checkout(req, res) {
     
         try {   //find cart with status_cart pending
-            const findCart = Cart.findOne({
+            const findCart = await Cart.findOne({
                 where: { 
                     status_cart: 'pending',
                     user_id: req.userId
@@ -17,20 +17,29 @@ class orderController {
                 })
             }
             //create order
-            let total = 0
-            // const priceMapping = {}
+            
+            let itemCart = await Item_cart.findAll({
+                where: { cart_id: findCart.id}
+              })
 
-            for (let itemCart of findCart) {
-                let price = Item_cart.findOne({
-                    where: { cart_id: itemCart.id}
+            if (itemCart.length === 0) {
+                return res.status(404).json({
+                    message: 'item_cart not found'
                 })
-                // priceMapping[price.id] = price.total_price
-                total = total + price.total_price
             }
-            const createOrder = Order.create({
+
+            let cartPrice = {}
+            let totalPrice = 0;
+            itemCart.forEach((itemCartData) => {
+                cartPrice[itemCartData.id] = itemCartData.total_price
+                totalPrice = totalPrice + itemCartData.total_price
+            })
+
+            const createOrder = await Order.create({
+                user_id: findCart.user_id,
                 cart_id: findCart.id,
                 status_order: 'pending',
-                total_price: total
+                total_price: totalPrice
             })
             if (!createOrder) {
                 return res.status(400).json({
@@ -39,7 +48,7 @@ class orderController {
             }
             
             return res.status(200).json({
-                message: `successful checkout, please confirm your purchase`,
+                message: `checkout sucsessfully, next purchase`,
                 data: createOrder
             })
         }
