@@ -14,12 +14,12 @@ module.exports = {
         category_name: 'tisu'
       },
       {
-        category_name: 'shampoo'
+        category_name: 'sabun'
       },
     ], {})
   },
 
   async down (queryInterface, Sequelize) {
-     await queryInterface.bulkDelete('People', null, {})
+     await queryInterface.bulkDelete('categories', null, {})
   }
 }
