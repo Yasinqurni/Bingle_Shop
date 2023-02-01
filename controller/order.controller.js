@@ -1,8 +1,10 @@
 const { Order, Cart, Item_cart, Item } = require('../db/models')
+const errorHelper = require('../respon-helper/error.helper')
+const response = require('../respon-helper/response.helper')
 
 class orderController {
     
-    async checkout(req, res) {
+    async checkout(req, res, next) {
     
         try {   
             //find cart with status_cart pending
@@ -13,9 +15,7 @@ class orderController {
                     }
             })
             if(!findCart) {
-                return res.status(404).json({
-                    message: `cart not found`
-                })
+                throw new errorHelper(404, 'Cart not found')
             }
 
             //create order
@@ -24,9 +24,7 @@ class orderController {
               })
 
             if (itemCart.length === 0) {
-                return res.status(404).json({
-                    message: 'item_cart not found'
-                })
+                throw new errorHelper(404, 'item_cart not found')
             }
 
             let cartPrice = {}
@@ -42,39 +40,28 @@ class orderController {
                 status_order: 'pending',
                 total_price: totalPrice
             })
-            if (!createOrder) {
-                return res.status(400).json({
-                    message: `cannot create order`
-                })
-            }
+                if (!createOrder) {
+                    throw new errorHelper(400, 'cannot create order')
+                }
 
             //update status cart
             const updateCart = await Cart.update(
                 { status_cart: 'process' },
                 { where: {id: findCart.id}}
             )
-
-            if(!updateCart) {
-                return res.status(400).json({
-                    message: `cannot update status cart`
-                })
-            }
-            
-            
-            return res.status(200).json({
-                message: `checkout sucsessfully, next purchase`,
-                data: createOrder
-            })
+                if(!updateCart) {
+                    throw new errorHelper(400, 'cannot update cart')
+                }
+            return new response(res, 200, createOrder)
+           
         }
 
-        catch(err) {
-            res.status(500).json({
-                message: err.message
-            })
+        catch(error) {
+            next(error)
         }
     }
 
-    async confirmPayment(req, res) {
+    async confirmPayment(req, res, next) {
         //update order status dari pending menjadi success
         //update cart status dari process menjadi success
         //update stock item 
@@ -86,17 +73,17 @@ class orderController {
                     status_order: 'pending'
                     }
             })
-
-            if (!findOrder) {
-                return res.status(400).json({
-                    message: `cannot find order`
-                })
-            }
+                if (!findOrder) {
+                    throw new errorHelper(404, 'cannot find order')
+                }
     
             const updateOrder = await Order.update(
                 {status_order: 'success'},
                 {where: {id: findOrder.id}}
             )
+                if (!updateOrder) {
+                    throw new errorHelper(400, 'cannot update order')
+                }
                 
 
             // Update cart
@@ -106,14 +93,18 @@ class orderController {
                     user_id: findOrder.user_id
                 }
             })
-            
+                if (!findCart) {
+                    throw new errorHelper(404, 'cannot find cart')
+                }
 
-            await Cart.update(
+            const updateCart = await Cart.update(
                 {status_cart: 'success'},
                 {where: {id: findCart.id}}
             )
-               
-                
+                if (!updateCart) {
+                    throw new errorHelper(400, 'cannot update cart')
+                }
+
             //update quantity item
             const itemCart = await Item_cart.findAll({
                 where: {cart_id: findCart.id}
@@ -128,20 +119,17 @@ class orderController {
                     {where: {id: item.item_id}}
                 )
             }
-            return res.status(200).json({
-                message: `payment successfully`
-            })
+            return new response(res, 200, 'payment successfully')
+    
         }
-        catch (err) {
-            res.status(500).json({
-                message: err.message
-            })
+        catch (error) {
+            next(error)
         }
 
 
     }
 
-    async cancelOrder(req, res) {
+    async cancelOrder(req, res, next) {
         //find order dengan status pending
         //delete order
         //merubah status cart dari process menjadi pending
@@ -153,9 +141,7 @@ class orderController {
                 }
             })
                 if(!findOrder) {
-                    return res.status(404).json({
-                        message: 'Order not found'
-                    })
+                    throw new errorHelper(404, 'Order not found')
                 }
             await Order.destroy({
                 where: {id: findOrder.id}
@@ -168,24 +154,19 @@ class orderController {
                 }
             })
                 if(!findCart) {
-                    return res.status(404).json({
-                        message: 'cart not found'
-                    })
+                    throw new errorHelper(404, 'Cart not found')
                 }
             await Cart.update(
                 {status_cart: 'pending'},
                 {where: {id: findCart.id}}
             )
     
-            return res.status(200).json({
-                message: 'cancel order successfully'
-            })
+            return new response(res, 200, 'cancel order successfully')
+
         }
         
-        catch(err) {
-            return res.status(500).json({
-                message: err.message
-            })
+        catch(error) {
+            next(error)
         }
     }
     

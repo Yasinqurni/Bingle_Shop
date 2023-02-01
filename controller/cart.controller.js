@@ -1,8 +1,10 @@
 const { Item, Cart, Item_cart } = require('../db/models')
+const errorHelper = require('../respon-helper/error.helper')
+const response = require('../respon-helper/response.helper')
 
 class cartController {
    
-    async addCart(req, res) {
+    async addCart(req, res, next) {
         try {
         //status cart {pending,processing,complete}
         //1. menemukan item yang akan dimasukkan ke cart dengan menggunakan id_item
@@ -15,9 +17,7 @@ class cartController {
             
             const findItem = await Item.findByPk(id)
             if (!findItem) {
-                return res.status(404).json({
-                    message: `item ${id} not found`
-                })
+                throw new errorHelper(404, 'cannot find item')
             }
 
             // menemukan cart dengan status item:pending
@@ -51,23 +51,17 @@ class cartController {
                 total_price: totalprice
             })
             if (!createItemcart) {
-                return res.status(404).json({
-                    message: `cannot create item_cart`
-                })
+                throw new errorHelper(400, `cannot create itemcart`)
             }
-            return res.status(200).json({
-                message: `created item_cart`,
-                data: createItemcart
-            })
+            return new response(res, 200, createItemcart)
+
         }
-        catch (err) {
-            res.status(500).json({
-                message: err.message,
-            })
+        catch (error) {
+            next(error)
         }
     }
 
-    async showCart(req, res) {
+    async showCart(req, res, next) {
        
         try {
             const findCart = await Cart.findAll({
@@ -85,22 +79,14 @@ class cartController {
                 where: {user_id: req.userId}
             })
             if (!findCart) {
-                return res.status(500).json({
-                    message: `cart not found`
-                })
+                throw new errorHelper(404, 'cannot find cart')
             }
             
-            return res.status(200).json({
-                message: `show cart successfully`,
-                data: findCart,
-                
-            })
+            return new response(res, 200, findCart)
+ 
         }
-        catch(err) {
-            return res.status(500).json({
-                message: err.message
-                
-            })
+        catch(error) {
+            next(error)
         }
         
     }

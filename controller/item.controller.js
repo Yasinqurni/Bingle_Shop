@@ -1,120 +1,107 @@
 const { Item, Image } = require('../db/models')
+const errorHelper = require('../respon-helper/error.helper')
+const response = require('../respon-helper/response.helper')
 
 class itemController {
 
-    createItem(req, res) {
-        if(!req.body) {
-            res.status(400).json({
-                message: 'body must be required'
+    async createItem(req, res, next) {
+        try {
+            if(!req.body) {
+                res.status(400).json({
+                    message: 'body must be required'
+                })
+                
+            }
+            const create = await Item.create({
+                user_id: req.userId,
+                name_item: req.body.name_item,
+                category_id: req.body.category_id,
+                price: req.body.price,
+                quantity: req.body.quantity
             })
-            return
+            return new response(res, 200, create)
         }
-        Item.create({
-            user_id: req.userId,
-            name_item: req.body.name_item,
-            category_id: req.body.category_id,
-            price: req.body.price,
-            quantity: req.body.quantity
-        })
-        .then((result) => {
-            res.status(201).json({
-            data: result,
-            message: 'Item created successfully'
-            })
-        })
-        .catch((err) => {
-            res.status(500).json({
-            message: err.message
-            })
-        })
-    }
-
-    readItem (req, res) {
-
-        Item.findAll({
-            include: Image
-        }) 
-    
-        .then((result) => {
-            res.status(200).json({
-                message: 'show all items successfully',
-                data: result
-            })
-        })
-        .catch((err) => {
-            res.status(500).json({
-                message: err.message
-            })
-        })
-    }
-
-    async readItemById (req, res) {
-
-        const id = req.params.id
-        Item.findByPk(id) 
-        .then((result) => {
-                res.status(200).json({
-                    data: result,
-                    message: `show item with id: ${id}`,
-                })
-        })
-        .catch((err) => {
-            res.status(500).json({
-                message: err.message
-            })
-        })
-    }
-
-    deleteItem (req, res) {
-
-        const id = req.params.id
         
-        Item.destroy({
-            where: {id: id}
-        })
-        .then((num) => {
-            if (num == 1) {
-            res.status(200).json({
-                message:  `delete item by id: ${id} successfully`,
-                })
-            }else {
-            res.status(404).json({
-                message:  `item with id: ${id} not found`,
-                })
-            }
-        })
-        .catch((err) => {
-            res.status(500).json({
-                message: err.message
-            })
-        })
-
+        catch(error) {
+           next(error)
+        }
     }
 
-    updateItem (req, res) {
-        
-        const id = req.params.id
-        
-        Item.update(req.body, {
-            where: {
-                id: id
-            }
-        }).then((result) => {
-            if (result == 1) {
-                res.status(200).json({
-                    message: `update item id: ${id} is successfully`
-                })
-            }else {
-                res.status(404).json({
-                    message: `id: ${id} not found`
-                })
+    async readItem (req, res, next) {
+
+        try {
+            const findItem = await Item.findAll({
+                include: Image
+            }) 
+            
+            if(!findItem) {
+                throw new errorHelper (404, "Item not found")
             }
             
-        }).catch((err) => {
-            res.status(500).json({
-                message: err.message
+            return new response(res, 200, findItem)
+        }
+        
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async readItemById (req, res, next) {
+
+        try {
+            const id = req.params.id
+            const findItemByPk = await Item.findByPk(id) 
+            if(!findItemByPk) {
+                throw new errorHelper(404, 'item not found')
+            }
+            return new response(res, 200, findItemByPk)
+        }
+        
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async deleteItem (req, res, next) {
+
+        try {
+
+            const id = req.params.id
+            const deleteItem =  await Item.destroy({
+                where: {id: id}
             })
-        })
+                if (!deleteItem) {
+                    throw new errorHelper(400, 'cannot delete item')
+                }
+
+            return new response (res,200, `delete item by ${id} sucsessfully`)
+                
+        }
+        
+        catch(error) {
+            next(error)
+        }
+
+    }
+
+    async updateItem (req, res, next) {
+        
+        try {
+            const id = req.params.id
+        
+            const updateItem = await Item.update(req.body, {
+                where: {id: id}
+            })
+            if(!updateItem) {
+                throw new errorHelper(400, `cannot update item with id ${id}`)
+            }
+            
+            return new response(res, 200, updateItem)
+            
+        }
+        catch(error) {
+            next(error)
+        }
     }
 }
 
