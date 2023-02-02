@@ -23,7 +23,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, createUsers)
+                return new response(res, 200, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -46,7 +46,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, createUsers)
+                return new response(res, 200, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -69,7 +69,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, createUsers)
+                return new response(res, 200, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -112,6 +112,7 @@ class userController {
             //membuat queri untuk menemukan id sesuai dengan yang ada di token
             console.log(req.userId)
             const userProfile = await User.findOne({
+            attributes:['fullname', 'email', 'phone'],
             where: {id: req.userId} 
             })
 

@@ -1,4 +1,5 @@
 const { Item, Cart, Item_cart } = require('../db/models')
+const user = require('../db/models/users.model')
 const errorHelper = require('../respon-helper/error.helper')
 const response = require('../respon-helper/response.helper')
 
@@ -65,8 +66,12 @@ class cartController {
        
         try {
             const findCart = await Cart.findAll({
-                attributes: ['id', 'user_id', 'status_cart'],
+                attributes: ['id', 'status_cart'],
                 include: [
+                    {
+                        model: user,
+                        attributes: ['fullname', 'email']
+                    },
                     {
                         model: Item_cart,
                         attributes: ['id', 'item_id', 'quantity_order', 'total_price'],

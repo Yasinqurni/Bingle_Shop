@@ -19,7 +19,7 @@ class itemController {
                 price: req.body.price,
                 quantity: req.body.quantity
             })
-            return new response(res, 200, create)
+            return new response(res, 200, 'create item successfully')
         }
         
         catch(error) {
@@ -31,6 +31,7 @@ class itemController {
 
         try {
             const findItem = await Item.findAll({
+                attributes: ['id', 'name_item', 'category_id', 'price', 'quantity'],
                 include: Image
             }) 
             
@@ -50,7 +51,10 @@ class itemController {
 
         try {
             const id = req.params.id
-            const findItemByPk = await Item.findByPk(id) 
+            const findItemByPk = await Item.findByPk(id, {
+                attributes: ['id', 'name_item', 'category_id', 'price', 'quantity'],
+                include: Image
+                }) 
             if(!findItemByPk) {
                 throw new errorHelper(404, 'item not found')
             }

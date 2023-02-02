@@ -52,6 +52,21 @@ class orderController {
                 if(!updateCart) {
                     throw new errorHelper(400, 'cannot update cart')
                 }
+
+             //update quantity item
+            //  const itemCart = await Item_cart.findAll({
+            //     where: {cart_id: findCart.id}
+            // })
+            for (const item of itemCart) {
+                const findItem = await Item.findOne({
+                    where: {id: item.item_id}
+                })
+                const qty = findItem.quantity - item.quantity_order
+                await Item.update(
+                    {quantity: qty },
+                    {where: {id: item.item_id}}
+                )
+            }
             return new response(res, 200, createOrder)
            
         }
@@ -105,20 +120,7 @@ class orderController {
                     throw new errorHelper(400, 'cannot update cart')
                 }
 
-            //update quantity item
-            const itemCart = await Item_cart.findAll({
-                where: {cart_id: findCart.id}
-            })
-            for (const item of itemCart) {
-                const findItem = await Item.findOne({
-                    where: {id: item.item_id}
-                })
-                const qty = findItem.quantity - item.quantity_order
-                await Item.update(
-                    {quantity: qty },
-                    {where: {id: item.item_id}}
-                )
-            }
+           
             return new response(res, 200, 'payment successfully')
     
         }
@@ -133,6 +135,7 @@ class orderController {
         //find order dengan status pending
         //delete order
         //merubah status cart dari process menjadi pending
+        //update stock item
         try {
             const findOrder = await Order.findOne({
                 where: {
@@ -160,7 +163,19 @@ class orderController {
                 {status_cart: 'pending'},
                 {where: {id: findCart.id}}
             )
-    
+            //update stock barang
+            const itemCart = await Item_cart.findAll({
+                where: {id: findCart.id}
+            })
+            for (let item of itemCart) {
+                const findItem = await Item.findOne({
+                    where: {id: item.item_id}
+                })
+                let qty = findItem.quantity + item.quantity_order 
+                await Item.update(
+                    {quantity: qty},
+                    {where: {id: item.item_id}})
+            }
             return new response(res, 200, 'cancel order successfully')
 
         }

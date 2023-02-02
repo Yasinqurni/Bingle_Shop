@@ -8,7 +8,6 @@ class itemCek {
         // membuat perandingan antara item.quantity dan req.body.quantity_item dari table cart_item
         //if item.quantity < req.body.quantity_item maka return cannot order becouse the stock item is ()
         // else item.quantity > req.body.quantity_item maka next
-            const findItem = 
     
         }
 }
