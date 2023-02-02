@@ -65,10 +65,18 @@ class itemController {
     async deleteItem (req, res, next) {
 
         try {
-
             const id = req.params.id
+            const findItem = await Item.findOne({
+                where: {
+                    user_id: req.userId,
+                    id: req.params.id
+                }
+            })
+                if(!findItem) {
+                    throw new errorHelper(404, 'item not found')
+                }
             const deleteItem =  await Item.destroy({
-                where: {id: id}
+                where: {id: findItem.id}
             })
                 if (!deleteItem) {
                     throw new errorHelper(400, 'cannot delete item')
@@ -88,15 +96,24 @@ class itemController {
         
         try {
             const id = req.params.id
+            const findItem = await Item.findOne({
+                where: {
+                    user_id: req.userId,
+                    id: req.params.id
+                }
+            })
+                if(!findItem) {
+                    throw new errorHelper(404, 'item not found')
+                }
         
             const updateItem = await Item.update(req.body, {
-                where: {id: id}
+                where: {id: findItem.id}
             })
             if(!updateItem) {
                 throw new errorHelper(400, `cannot update item with id ${id}`)
             }
             
-            return new response(res, 200, updateItem)
+            return new response(res, 200, 'update item successfully')
             
         }
         catch(error) {

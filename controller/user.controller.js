@@ -17,7 +17,53 @@ class userController {
                 phone: req.body.phone,
                 email: req.body.email,
                 password: bcrypt.hashSync(req.body.password, 8),
-                role: req.body.role
+                role: 'user'
+            })
+                //memberikan respon bila gagal membuat user baru
+                if(!createUsers){
+                    throw new errorHelper(400, 'cannot create user')
+                }
+                return new response(res, 200, createUsers)
+        }
+       catch(error) {
+            next(error)
+        }  
+    }
+
+    async registerSeller (req, res, next) {
+
+        try {
+            //membuat user baru 
+            const createUsers = await User.create({
+                fullname: req.body.fullname,
+                address: req.body.address,
+                phone: req.body.phone,
+                email: req.body.email,
+                password: bcrypt.hashSync(req.body.password, 8),
+                role: 'seller'
+            })
+                //memberikan respon bila gagal membuat user baru
+                if(!createUsers){
+                    throw new errorHelper(400, 'cannot create user')
+                }
+                return new response(res, 200, createUsers)
+        }
+       catch(error) {
+            next(error)
+        }  
+    }
+
+    async registerAdmin (req, res, next) {
+
+        try {
+            //membuat user baru 
+            const createUsers = await User.create({
+                fullname: req.body.fullname,
+                address: req.body.address,
+                phone: req.body.phone,
+                email: req.body.email,
+                password: bcrypt.hashSync(req.body.password, 8),
+                role: 'admin'
             })
                 //memberikan respon bila gagal membuat user baru
                 if(!createUsers){
@@ -42,17 +88,17 @@ class userController {
                 throw new errorHelper(404, 'email not found')
             }
                 //membuat fariable validasi password
-            let passwordIsValid = bcrypt.compareSync(req.body.password, User.password)
+            let passwordIsValid = bcrypt.compareSync(req.body.password, findUser.password)
             
             if(!passwordIsValid) {
                 throw new errorHelper(400, 'Invalid password')
             }
             //membuat token dan akan mengirimkannya kedalam respom
-            let token = jwt.sign({ id: User.id, role: User.role}, config.secret, {
+            let token = jwt.sign({ id: findUser.id, role: findUser.role}, config.secret, {
                 expiresIn: 86400, //24 jam
             })
             //respon dari login
-            return new response(res, 200, `token: ${token}`)  
+            return new response(res, 200, token )  
         }
 
         catch(error) {
@@ -64,9 +110,11 @@ class userController {
     async profileUser(req, res, next) {
         try{
             //membuat queri untuk menemukan id sesuai dengan yang ada di token
+            console.log(req.userId)
             const userProfile = await User.findOne({
             where: {id: req.userId} 
             })
+
             if(!userProfile) {
                 throw new errorHelper(404, "User not found")
             }

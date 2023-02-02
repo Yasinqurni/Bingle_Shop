@@ -1,22 +1,40 @@
 const { User } = require('../db/models')
+const validator = require('validator')
+const errorHelper = require('../respon-helper/error.helper')
 
 class isUserExist {
-    validate (req, res, next) {
+    async validate (req, res, next) {
 
-        User.findOne({
-            where: {
-                email: req.body.email
+        try {
+            //verifikasi email
+            const isEmailExist = await  User.findOne({
+                where: {
+                    email: req.body.email
+                }
+            })
+            if(isEmailExist) {
+                throw new errorHelper(400, 'User already exists')
             }
-        })
-        .then((user) => {
-            if (user) {
-                res.status(400).json({
-                    message: 'User already exists'
-                })
-                return
+            
+            //verifikasi format email
+            const isEmail = await validator.isEmail(req.body.email)
+            if(isEmail == false) {
+                throw new errorHelper(400, 'your email or phone number are invalid!')
             }
-            next()
-        })
+
+            //verifikasi format noHp
+            const isNoHp = await validator.isMobilePhone(req.body.phone,['id-ID'])
+            if(isNoHp == false) {
+                throw new errorHelper(400, 'your email or phone number are invalid!')
+            }
+                next()
+
+        }
+        
+        catch(error) {
+            next(error)
+        }
+        
     }
 }
 

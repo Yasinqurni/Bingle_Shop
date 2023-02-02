@@ -26,6 +26,16 @@ class tokenJwt {
             next()
         })
     }
+
+    otorisasi (req, res, next) {
+        if(req.userRole == 'admin' || req.userRole == 'seller') {
+            next()
+        }else{
+            res.status(500).json({
+                message: 'you are not allowed'
+            })
+        }
+    }
 }
 
 module.exports = {

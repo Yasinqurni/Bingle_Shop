@@ -29,21 +29,21 @@ Item.belongsTo(Category, {
     foreignKey: 'category_id'
 })
 
-Item_cart.belongsTo(Item, {
-    foreignKey: 'item_id'
-})
+// Item_cart.belongsTo(Item, {
+//     foreignKey: 'item_id'
+// })
 
-Item.hasMany(Item_cart, {
-    foreignKey: 'item_id'
-})
+// Item.hasMany(Item_cart, {
+//     foreignKey: 'item_id'
+// })
 
-Item_cart.belongsTo(Cart, {
-    foreignKey: 'cart_id'
-})
+// Item_cart.belongsTo(Cart, {
+//     foreignKey: 'cart_id'
+// })
 
-Cart.hasMany(Item_cart, {
-    foreignKey: 'cart_id'
-})
+// Cart.hasMany(Item_cart, {
+//     foreignKey: 'cart_id'
+// })
 
 Cart.belongsToMany(Item, {through: Item_cart})
 Item.belongsToMany(Cart, {through: Item_cart})
