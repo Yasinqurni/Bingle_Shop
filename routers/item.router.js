@@ -5,7 +5,7 @@ const { tokenJwt } = require('../middleware')
 
 
 const itemcontroller = new itemController()
-const tokenjwt = new tokenJwt
+const tokenjwt = new tokenJwt()
 
 //Create Item Endpoint
 router.post('/api/item',tokenjwt.verifyToken, tokenjwt.otorisasi, itemcontroller.createItem)

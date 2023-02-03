@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const {userRouter, itemRouter, cartRouter, orderRouter } = require('./routers')
+const {userRouter, itemRouter, cartRouter, orderRouter, imageRouter } = require('./routers')
 const bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
@@ -9,6 +9,7 @@ app.use('/v1', userRouter)
 app.use('/v1', itemRouter)
 app.use('/v1', cartRouter)
 app.use('/v1', orderRouter)
+app.use('/v1', imageRouter)
 
 //error handler
 app.use((err, req, res, next) => {
