@@ -1,13 +1,14 @@
 const { orderController } = require('../controller/order.controller')
 const router = require('express').Router()
-const { tokenJwt } = require('../middleware')
+const { tokenJwt, itemCek } = require('../middleware')
 
 
 const ordercontroller = new orderController()
 const tokenjwt = new tokenJwt()
+const itemcek = new itemCek()
 
 //create order
-router.post('/api/order',tokenjwt.verifyToken, ordercontroller.checkout)
+router.post('/api/order',tokenjwt.verifyToken,itemcek.itemStokOrder, ordercontroller.checkout)
 //konfirmasi pembayaran
 router.patch('/api/order',tokenjwt.verifyToken, ordercontroller.confirmPayment)
 //cancel order
