@@ -67,6 +67,7 @@ class orderController {
                     {where: {id: item.item_id}}
                 )
             }
+            
             return new response(res, 201, createOrder)
            
         }
