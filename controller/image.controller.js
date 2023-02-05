@@ -31,7 +31,7 @@ class imageController {
                 throw new errorHelper(400, 'cannot upload image')
             }
 
-            return new response (res, 200, 'upload image successfully')
+            return new response (res, 201, 'upload image successfully')
 
         }
         catch(error) {

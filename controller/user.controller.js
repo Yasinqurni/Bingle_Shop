@@ -23,7 +23,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, 'create user successfully')
+                return new response(res, 201, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -46,7 +46,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, 'create user successfully')
+                return new response(res, 201, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -69,7 +69,7 @@ class userController {
                 if(!createUsers){
                     throw new errorHelper(400, 'cannot create user')
                 }
-                return new response(res, 200, 'create user successfully')
+                return new response(res, 201, 'create user successfully')
         }
        catch(error) {
             next(error)
@@ -98,7 +98,7 @@ class userController {
                 expiresIn: 86400, //24 jam
             })
             //respon dari login
-            return new response(res, 200, token )  
+            return new response(res, 201, token )  
         }
 
         catch(error) {

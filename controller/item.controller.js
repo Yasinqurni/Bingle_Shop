@@ -7,7 +7,7 @@ class itemController {
     async createItem(req, res, next) {
         try {
             if(!req.body) {
-                res.status(400).json({
+                res.status(403).json({
                     message: 'body must be required'
                 })
                 
@@ -15,11 +15,11 @@ class itemController {
             const create = await Item.create({
                 user_id: req.userId,
                 name_item: req.body.name_item,
-                category_id: req.body.category_id,
+                category_id: req.body.category_id,  
                 price: req.body.price,
                 quantity: req.body.quantity
             })
-            return new response(res, 200, 'create item successfully')
+            return new response(res, 201, 'create item successfully')
         }
         
         catch(error) {
@@ -117,7 +117,7 @@ class itemController {
                 throw new errorHelper(400, `cannot update item with id ${id}`)
             }
             
-            return new response(res, 200, 'update item successfully')
+            return new response(res, 201, 'update item successfully')
             
         }
         catch(error) {

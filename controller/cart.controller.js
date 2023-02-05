@@ -54,7 +54,7 @@ class cartController {
             if (!createItemcart) {
                 throw new errorHelper(400, `cannot create itemcart`)
             }
-            return new response(res, 200, 'create item_cart successfully')
+            return new response(res, 201, 'create item_cart successfully')
 
         }
         catch (error) {

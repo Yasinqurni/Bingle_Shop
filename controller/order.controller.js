@@ -67,7 +67,7 @@ class orderController {
                     {where: {id: item.item_id}}
                 )
             }
-            return new response(res, 200, createOrder)
+            return new response(res, 201, createOrder)
            
         }
 
@@ -121,7 +121,7 @@ class orderController {
                 }
 
            
-            return new response(res, 200, 'payment successfully')
+            return new response(res, 201, 'payment successfully')
     
         }
         catch (error) {
@@ -176,7 +176,7 @@ class orderController {
                     {quantity: qty},
                     {where: {id: item.item_id}})
             }
-            return new response(res, 200, 'cancel order successfully')
+            return new response(res, 201, 'cancel order successfully')
 
         }
         
