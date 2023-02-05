@@ -30,9 +30,16 @@ class itemController {
     async readItem (req, res, next) {
 
         try {
+            const { page = '1', limit = '5'} = req.query
+    
+            const pageInt = Number(page)
+            const limitInt = Number(limit)
+            const offset = (pageInt - 1) * limitInt
             const findItem = await Item.findAll({
                 attributes: ['id', 'name_item', 'category_id', 'price', 'quantity'],
-                include: Image
+                include: Image,
+                limit: limitInt,
+                offset: offset
             }) 
             
             if(!findItem) {
