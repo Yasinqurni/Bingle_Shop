@@ -31,6 +31,9 @@ class itemCek {
                     user_id: req.userId
                 }
             })
+            if(!findCart) {
+                throw new errorHelper(404, "not found order")
+            }
             //cek quantity_order di table Item_cart
             const findItemcart = await Item_cart.findAll({
                 where: {cart_id: findCart.id}
